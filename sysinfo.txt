@@ -1,0 +1,62 @@
+Sysinfo 1.2
+-----------
+Det är inte ofta man får beröm för vad man skapat, men när jag
+fick höra av en user på min BBS att mitt sysinfo var de snyggaste han sett,
+tyckte jag att även andra skulle få del av mitt sysinfo .. So here it is:
+
+Disclaimer
+----------
+Jag avsäger mig ALLT ansvar för vad detta program må ställa till med.
+Du får programmet "i befintligt skick " och använder det på egen risk.
+
+Installering
+------------
+Detta ska du ha i ditt arkiv:
+
+/
+Julia.lha	- Programpaketet "Julia"
+Sysinfo.doc 	- Denna manual
+/rexx
+extkom22513.nik	- Sysinfoprogrammet
+
+Installation:
+-------------
+Om du packar upp allt i Nikom: ligger det mesta rätt.. Annars får
+du flytta det.
+
+1) Gå in i extkom22513.nik och editera den. (Använd INTE ED!)
+   Filen är ganska självförklarande.
+
+2) Se till att styra om i kommandon.cfg så att Sysinfo kallar
+   på extkom22513.nik och inte extkom508.nik.
+
+   N=Sysinfo
+   O=1
+   #=22513
+   A=.
+
+3) Packa upp Julia, och installera den som den ska installeras.
+(Se julias instruktion ...)
+
+4) Ha kul!
+
+Det är inte så svårt som det låter. Har du idéer, frågor eller
+förslag:
+
+Historik:
+
+1.0 Första klara versionen.
+1.1 Tillägg: Ny "Julia", Ny funktion som visar antal inloggningar.
+1.2 Nu uppdaterat för att fungera med modern, post-bbs Nikom. (Releasedatum för detta paket: 2021-05-10)
+
+Nuvarande uppgifter:
+Email: erik@zalitis.se
+Homepage: erik@zalitis.se
+BBS: the.ericade.net (SSH eller telnet)
+
+Gamla uppgifter:
+Email: radioufs@hotmail.com
+Homepage: www.uf.se/rufs/z
+Netmail sysop@2:201/370.0
+BBS: 08/7268265
+

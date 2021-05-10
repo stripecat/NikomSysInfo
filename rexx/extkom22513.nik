@@ -1,0 +1,173 @@
+/* Kommandot Sysinfo
+$VER: Sysinfo 1.2/98 (5.5.98)
+N=SYSINFO
+O=1
+#=22513
+S=0
+*/
+parse arg nod pers argument
+options results
+signal on syntax
+parse version arexx arexx cpu mpu not net
+
+
+if mpu='NONE' then mpuf='utan matteprocessor.'          /* Kolla MPU */
+else mpuf='med matteprocessor.'
+
+
+/* ÄNDRINGSZON UNDER ÄNDRINGSZON UNDER ÄNDRINGSZON UNDER */  
+/* Ändra här under så att det stämmer med din dator / BBS */
+
+sysop = userinfo(0,'n')
+Cosysop = userinfo(5,'n')
+
+/* Vissa baser har en filsysop eller 2 cossor eller nåt som bör stå */
+/* i Sysinfo. Om du bara har en cossa, då sätter du extra till 0 */
+
+extra=0 /* Har du mer än en Cosysop eller person du vill ha i sysinfo? */
+/* om extra = 0 -> ingen extra cosysop/person om extra = 1 -> extra persom */
+cs='CoSysop'                                           /* titel Extraperson*/
+csa=1                                                  /* Användarnummer */
+
+BBS='The ERICADE Network'                              /* BBSnamn */
+dator='Emulerad A1200'                                          /* Vilken dator har du? */
+vfd=''                                   /* Max 16 tecken
+                                                          Extra info på 
+                                                          första raden */ 
+
+/* Dessa kan du ändra direkt */
+ab = '2 meg chipmem / 9 meg fastmem 32bitars = 11 meg'  /* minne */
+ac = 'Emulerad 1 GB hårddisk.' /* hårddisk */
+ad = 'Telnetd.device som tillåter telnet-trafik.'                /* Modem */
+ae = '57600 BPS'
+/* Slut ändringar.. Bort med tassarna! */
+/* ÄNDRINGSZON OVAN ÄNDRINGSZON OVAN ÄNDRINGSZON OVAN */
+
+setlinecount OFF
+aa = dator'/'||cpu mpuf vfd                           /* Datormodell */
+
+sv = '[30m'
+vi = '[37m'
+Gu = '[33m'
+Bl = '[34m'
+Gr = '[32m'
+Li = '[35m'
+Ro = '[31m'
+
+Sb = '[40m'
+Rb = '[41m'
+Gb = '[42m'
+gub = '[43m'
+bb = '[44m'
+lb = '[45m'
+cb = '[46m'
+vb = '[47m'
+clr='0c'x
+LF='0a0d'x
+DLF='0a0a0d'x
+/*address command 'info >t:sysinfo1.txt'
+address command 'avail >t:sysinfo2.txt'*/
+sendstring clr
+sendstring 'Information om' bbs lf
+sendstring copies("-",length(bbs 'Information om')) lf 
+sendstring left('Sysop: ',30,'.') sysop
+sendstring lf
+sendstring left('Cosysop: ',30,'.') cosysop
+
+if extra=1 then do
+sendstring lf
+sendstring left(cs||'',30,'.') userinfo(csa,n) 
+end
+
+sendstring lf
+sendstring left('Högsta användarnummer: ',30,'.') Sysinfo(a)
+sendstring lf
+sendstring left('Textnummer: ',30,'.') Sysinfo(l) ' - ' Sysinfo(h) lf
+tot=sysinfo(h) - sysinfo(l)
+sendstring left('Totalt antal texter ',30,'.') tot lf
+sendstring left('Antal "Nycklar": ',30,'.') sysinfo(n) lf
+sendstring left('Antal kommandon: ',30,'.') sysinfo(k) lf
+sendstring left('Högsta mötesnummer: ',30,'.') sysinfo(m) lf
+sendstring left('Högsta areanummer: ',30,'.') sysinfo(o) lf lf
+sendstring 'Information om DIG' lf
+sendstring '------------------' lf
+sendstring left(userinfo(pers,n) ,30,'.') 'Status :' userinfo(pers,r) 'Inloggning :' userinfo(pers,i) lf 
+inne=Userinfo(pers,t)
+minne=inne/60
+tinne=minne/60
+lokalow=trunc((0.07*minne)+0.29,2)
+lokahi=trunc((0.14*minne)+0.29,2)
+regalow=trunc((0.36*minne)+0.29,2)
+regahigh=trunc((0.72*minne)+0.29,2)
+fjlow=trunc((0.66*minne)+0.29,2)
+fjhigh=trunc((1.32*minne)+0.29,2)
+ff= 'Du har varit inloggad här 'trunc(inne)' sekunder = 'trunc(minne)' minuter = 'trunc(tinne)' timmar'
+sendstring ff||lf
+sendstring copies("-",length(ff))||lf
+sendstring 'Om du ringer lokalt är det en Teleräkning på mellan 'trunc(lokalow)' och 'trunc(lokahi)' Kronor' lf
+sendstring 'Om du ringer regionalt är det en Teleräkning på mellan 'trunc(regalow)' och 'trunc(regahigh)' Kronor' lf
+sendstring 'Om du ringer fjärr är det en Teleräkning på mellan 'trunc(fjlow)' och 'trunc(fjhigh)' Kronor' lf
+
+ni=Nodeinfo(nod,t)
+if ni = 1 then sendstring 'Du är påloggad lokalt hos' sysop lf 
+if ni = 2 then do
+Conn=NodeInfo(nod,s)
+if conn=0 then conn=300 
+sendstring 'Du är påloggad via modem med hastigheten' conn 'Baud' lf
+end
+sendstring copies("-",length(ff))||lf
+bomp:
+sendstring '<Slå ihjäl vilken knapp som helst för att fortsätta!>'
+if RC=100 then exit
+getchar
+sendstring clr
+sendstring 'Systeminformation för' BBS lf
+sendstring copies("-",length(bbs 'Systeminformation för')) lf 
+sendstring left(left('Datormodell ',30,'.') aa,78) lf
+sendstring left(left('Minne: ',30,'.') ab,78) lf
+sendstring left(left('Hårddisk: ',30,'.') ac,78) lf
+sendstring left(left('Modem ',30,'.') ad,78) lf
+sendstring left(left('BPS-rate ',30,'.') ae,78) lf lf 
+if exists('nikom:rexx/extkom22510.nik') then do
+niknrcommand '22510' /* Starta Julia */
+sendstring vi
+end
+runfifo 'c:avail'
+sendstring lf
+
+sendstring '<Slå ihjäl vilken knapp som helst för att fortsätta!>'
+if rc=100 then exit
+getchar
+setlinecount ON
+sendstring clr
+sendstring 'Uppkopplingsstatistik på' bbs  lf
+sendstring copies("-",length(bbs 'Uppkopplingsstatistik på')) lf lf
+
+nurd = sysinfo(t)
+i=0
+ap=0
+do until i=nurd
+i=i+1
+bi='b'i
+c.i=word(sysinfo(bi),1)
+a.i=word(sysinfo(bi),2)
+ap=ap+a.i
+end
+i=0
+sendstring 'Total antal inloggade:' ap '' lf
+sendstring '-------------------------------------------------------' lf
+do until i=nurd
+i=i+1
+pr=trunc((a.i/ap * 100)+.5e-1,1)
+sendstring '*' right(a.i,3) 'personer loggade in med ' right(c.i,5) 'BPS (' pr '% )'lf
+sendstring '-------------------------------------------------------' lf
+end
+sendstring '<Slå ihjäl vilken knapp som helst för att fortsätta!>'
+getchar 
+
+exit
+syntax:
+sendstring '0a0d'x||errortext(rc)' på rad 'sigl||'0a0d'x
+sendstring "'"sourceline(sigl)"'"||lf
+sendstring "Meddela SysOp!"||'0a0d'x
+
